@@ -27,6 +27,7 @@
 #include "../scope_app_i.h"
 #include "flipperscope_icons.h"
 
+#define USE_TIMEOUT 0
 #define DIGITAL_SCALE_12BITS ((uint32_t)0xFFF)
 #define VAR_CONVERTED_DATA_INIT_VALUE (DIGITAL_SCALE_12BITS + 1)
 #define VAR_CONVERTED_DATA_INIT_VALUE_16BITS (0xFFFF + 1U)
