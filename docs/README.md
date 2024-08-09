@@ -4,7 +4,7 @@ Oscilloscope application - apply signal to pin 16/PC0, with a voltage ranging fr
 
 ## Guide
 
-**Center** = Pause/Un-pause display
+* **Center** = Pause/Un-pause display
 
 * In the setup screen you specify a time period of the analogue to digital converter, so 1ms, means sampling at 1000Hz.
 
