@@ -1,3 +1,7 @@
+## v0.4
+
+Add simple spectrum analyser
+
 ## v0.3
 
 Fix compilation issue
