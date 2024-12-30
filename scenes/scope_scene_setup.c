@@ -15,6 +15,14 @@ static void timeperiod_cb(VariableItem* item) {
     app->time = time_list[index].time;
 }
 
+static void fft_cb(VariableItem* item) {
+    ScopeApp* app = variable_item_get_context(item);
+    furi_assert(app);
+    uint8_t index = variable_item_get_current_value_index(item);
+    variable_item_set_current_value_text(item, fft_list[index].str);
+    app->fft = fft_list[index].window;
+}
+
 static void measurement_cb(VariableItem* item) {
     ScopeApp* app = variable_item_get_context(item);
     furi_assert(app);
@@ -34,6 +42,17 @@ void scope_scene_setup_on_enter(void* context) {
         if(time_list[i].time == app->time) {
             variable_item_set_current_value_index(item, i);
             variable_item_set_current_value_text(item, time_list[i].str);
+            break;
+        }
+    }
+
+    item = variable_item_list_add(
+        var_item_list, "FFT window", COUNT_OF(fft_list), fft_cb, app);
+
+    for(uint32_t i = 0; i < COUNT_OF(fft_list); i++) {
+        if(fft_list[i].window == app->fft) {
+            variable_item_set_current_value_index(item, i);
+            variable_item_set_current_value_text(item, fft_list[i].str);
             break;
         }
     }

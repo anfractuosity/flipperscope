@@ -26,7 +26,15 @@ typedef struct {
 static const timeperiod time_list[] =
     {{1.0, "1s"}, {0.1, "0.1s"}, {1e-3, "1ms"}, {0.1e-3, "0.1ms"}, {1e-6, "1us"}};
 
-enum measureenum { m_time, m_voltage, m_capture };
+typedef struct {
+    int window;
+    char* str;
+} fftwindow;
+
+static const fftwindow fft_list[] =
+    {{256, "256"}, {512, "512"}, {1024, "1024"}};
+
+enum measureenum { m_time, m_voltage, m_capture, m_fft};
 
 typedef struct {
     enum measureenum type;
@@ -36,7 +44,8 @@ typedef struct {
 static const measurement measurement_list[] = {
     {m_time, "Time"},
     {m_voltage, "Voltage"},
-    {m_capture, "Capture"}};
+    {m_capture, "Capture"},
+    {m_fft, "FFT"}};
 
 struct ScopeApp {
     Gui* gui;
@@ -48,6 +57,7 @@ struct ScopeApp {
     Widget* widget;
     TextInput* text_input;
     double time;
+    int fft;
     enum measureenum measurement;
     char file_name_tmp[MAX_LEN_NAME];
     uint16_t* data;
