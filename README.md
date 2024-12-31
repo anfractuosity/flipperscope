@@ -24,6 +24,7 @@ Also see [Derek Jamison's demonstration](https://www.youtube.com/watch?v=iC5fBGw
 
 * Measures frequency of waveform in hertz
 * Measures voltage: min, max, Vpp
+* FFT option provides simple spectrum analyser
 
 ![Signal Generator](photos/sig.jpg)
 
@@ -31,7 +32,9 @@ Also see [Derek Jamison's demonstration](https://www.youtube.com/watch?v=iC5fBGw
 
 ![Rigol](photos/rigol.jpg)
 
-![Flipper Zero running flipperscope](photos/volt.jpg)
+![Flipper Zero running flipperscope - showing voltage measurements](photos/volt.jpg)
+
+![Flipper Zero running flipperscope - showing spectrum analyser](photos/fft.jpg)
 
 ## Processing captures
 
@@ -62,8 +65,6 @@ plt.show()
 
 * Customisable input pin
 * Trigger type mode
-* FFT
-* ...
 
 ## Inspiration
 
