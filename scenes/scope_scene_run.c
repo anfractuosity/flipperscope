@@ -643,7 +643,7 @@ void scope_scene_run_on_enter(void* context) {
     bool running = true;
     bool save = false;
     while(running) {
-        if(furi_message_queue_get(event_queue, &event, 100) == FuriStatusOk) {
+        if(furi_message_queue_get(event_queue, &event, 150) == FuriStatusOk) {
             if((event.type == InputTypePress) || (event.type == InputTypeRepeat)) {
                 switch(event.key) {
                 case InputKeyLeft:
