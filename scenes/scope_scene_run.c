@@ -426,7 +426,7 @@ static void app_draw_callback(Canvas* canvas, void* ctx) {
     case m_time: {
         // Display current time period
         snprintf(buf1, 50, "Time: %s", time);
-        canvas_draw_str(canvas, 10, 10, buf1);
+        canvas_draw_str(canvas, 2, 10, buf1);
         // Shift waveform across a virtual 0 line, so it crosses 0
         for(uint32_t x = 0; x < adc_buffer; x++) {
             index_crossings[x] = -1;
@@ -459,7 +459,7 @@ static void app_draw_callback(Canvas* canvas, void* ctx) {
         avg /= countv;
         // Display frequency of waveform
         snprintf(buf1, 50, "Freq: %.1f Hz", (double)((float)freq / avg));
-        canvas_draw_str(canvas, 10, 20, buf1);
+        canvas_draw_str(canvas, 2, 20, buf1);
     } break;
     case m_fft: {
         for (uint32_t i=0; i < adc_buffer; i++){
@@ -483,16 +483,16 @@ static void app_draw_callback(Canvas* canvas, void* ctx) {
 
         // Display frequency of waveform
         snprintf(buf1, 50, "Freq: %.1fHz",  (double)idx * ((double)freq / (double)adc_buffer));
-        canvas_draw_str(canvas, 10, 10, buf1);
+        canvas_draw_str(canvas, 2, 10, buf1);
     } break;
     case m_voltage: {
         // Display max, min, peak-to-peak voltages
         snprintf(buf1, 50, "Max: %.2fV", (double)max);
-        canvas_draw_str(canvas, 10, 10, buf1);
+        canvas_draw_str(canvas, 2, 10, buf1);
         snprintf(buf1, 50, "Min: %.2fV", (double)min);
-        canvas_draw_str(canvas, 10, 20, buf1);
+        canvas_draw_str(canvas, 2, 20, buf1);
         snprintf(buf1, 50, "Vpp: %.2fV", (double)(max - min));
-        canvas_draw_str(canvas, 10, 30, buf1);
+        canvas_draw_str(canvas, 2, 30, buf1);
     } break;
     default:
         break;
