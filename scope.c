@@ -79,6 +79,7 @@ ScopeApp* scope_app_alloc() {
         app->view_dispatcher, ScopeViewSave, text_input_get_view(app->text_input));
 
     app->time = 0.001;
+    app->scale = 1.0f;
     app->fft = 256;
     app->measurement = m_time;
 

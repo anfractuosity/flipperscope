@@ -68,6 +68,7 @@ const uint32_t MSIRangeTable[16UL] = {
     0UL}; /* 0UL values are incorrect cases */
 
 char* time; // Current time period text
+float scale; // Current scale
 double freq; // Current samplerate
 uint8_t pause = 0; // Whether we want to pause output or not
 enum measureenum type; // Type of measurement we are performing
@@ -392,6 +393,13 @@ void iterative_cooley_tukey(float complex* X, int N) {
     }
 }
 
+// Found from:
+// https://stackoverflow.com/questions/427477/fastest-way-to-clamp-a-real-fixed-floating-point-value
+double clamp(double d, double min, double max) {
+    const double t = d < min ? min : d;
+    return t > max ? max : t;
+}
+
 // Used to draw to display
 static void app_draw_callback(Canvas* canvas, void* ctx) {
     UNUSED(ctx);
@@ -410,9 +418,9 @@ static void app_draw_callback(Canvas* canvas, void* ctx) {
     }
 
     if(pause)
-        canvas_draw_icon(canvas, 115, 0, &I_pause_10x10);
+        canvas_draw_icon(canvas, 116, 1, &I_pause_10x10);
     else
-        canvas_draw_icon(canvas, 115, 0, &I_play_10x10);
+        canvas_draw_icon(canvas, 116, 1, &I_play_10x10);
 
     // Calculate voltage measurements
     for(uint32_t x = 0; x < adc_buffer; x++) {
@@ -424,6 +432,9 @@ static void app_draw_callback(Canvas* canvas, void* ctx) {
 
     switch(type) {
     case m_time: {
+        // Display current scale
+        snprintf(buf1, 50, "%.0fx", (double)scale);
+        canvas_draw_str(canvas, 95, 10, buf1);
         // Display current time period
         snprintf(buf1, 50, "Time: %s", time);
         canvas_draw_str(canvas, 2, 10, buf1);
@@ -486,6 +497,9 @@ static void app_draw_callback(Canvas* canvas, void* ctx) {
         canvas_draw_str(canvas, 2, 10, buf1);
     } break;
     case m_voltage: {
+        // Display current scale
+        snprintf(buf1, 50, "%.0fx", (double)scale);
+        canvas_draw_str(canvas, 95, 10, buf1);
         // Display max, min, peak-to-peak voltages
         snprintf(buf1, 50, "Max: %.2fV", (double)max);
         canvas_draw_str(canvas, 2, 10, buf1);
@@ -502,9 +516,10 @@ static void app_draw_callback(Canvas* canvas, void* ctx) {
         // Draw lines between each data point
         // y should range from 0 to 63
         for(uint32_t x = 1; x < adc_buffer; x++) {
-            uint32_t prev = 63 - (uint32_t)(((float)mvoltDisplay[x - 1] / (float)VDDA_APPLI) * 63.0f);
-            uint32_t cur = 63 - (uint32_t)(((float)mvoltDisplay[x] / (float)VDDA_APPLI) * 63.0f);
-            canvas_draw_line(canvas, x - 1, prev, x, cur);
+            int32_t prev = 63 - (uint32_t)(((float)mvoltDisplay[x - 1] / (float)VDDA_APPLI) * scale * 63.0f);
+            int32_t cur = 63 - (uint32_t)(((float)mvoltDisplay[x] / (float)VDDA_APPLI) * scale * 63.0f);
+            if(!(prev < 0 && cur < 0))
+                canvas_draw_line(canvas, x - 1, clamp(prev, 0, 63), x, clamp(cur, 0, 63));
         }
     } else {
         // Process FFT data - excluding bin 0
@@ -568,6 +583,9 @@ void scope_scene_run_on_enter(void* context) {
             break;
         }
     }
+
+    // Obtain scale value
+    scale = app->scale;
 
     // Currently un-paused
     pause = 0;
