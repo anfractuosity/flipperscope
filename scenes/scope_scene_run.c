@@ -500,13 +500,14 @@ static void app_draw_callback(Canvas* canvas, void* ctx) {
 
     if (type != m_fft){
         // Draw lines between each data point
+        // y should range from 0 to 63
         for(uint32_t x = 1; x < adc_buffer; x++) {
-            uint32_t prev = 64 - (mvoltDisplay[x - 1] / (VDDA_APPLI / 64));
-            uint32_t cur = 64 - (mvoltDisplay[x] / (VDDA_APPLI / 64));
+            uint32_t prev = 63 - (uint32_t)(((float)mvoltDisplay[x - 1] / (float)VDDA_APPLI) * 63.0f);
+            uint32_t cur = 63 - (uint32_t)(((float)mvoltDisplay[x] / (float)VDDA_APPLI) * 63.0f);
             canvas_draw_line(canvas, x - 1, prev, x, cur);
         }
     } else {
-        // Draw FFT data
+        // Process FFT data - excluding bin 0
         float max = 0;
         for (uint32_t i = 1; i < adc_buffer / 2; i+= adc_buffer / 2 / 128) {
             float sum = 0;
@@ -518,20 +519,25 @@ static void app_draw_callback(Canvas* canvas, void* ctx) {
             }
         }
 
-        uint32_t xpos = 1;
+        uint32_t xpos = 0;
+        // xpos: 0 to 126 for window size 256
+        // xpos: 0 to 127 for window size 512
+        // xpos: 0 to 127 for window size 1024
+        // y should range from 0 to 63
         for (uint32_t i = 1; i < adc_buffer / 2; i+= adc_buffer / 2 / 128) {
             float sum = 0;
             for (uint32_t i2 = i; i2 < i + (adc_buffer / 2 / 128); i2++) {
                 sum += fft_power[i2];
             }
-            canvas_draw_line(canvas, xpos, 64 - 0, xpos, 64 - ((sum / max) * 64));
+            canvas_draw_line(canvas, xpos, 63, xpos, 63 - (uint32_t)(((sum / max) * 63.0f)));
             xpos++;
         }
     }
 
+    // Removing graph lines, to use extra pixel
     // Draw graph lines
-    canvas_draw_line(canvas, 0, 0, 0, 63);
-    canvas_draw_line(canvas, 0, 63, 128, 63);
+    //canvas_draw_line(canvas, 0, 0, 0, 63);
+    //canvas_draw_line(canvas, 0, 63, 127, 63);
 }
 
 static void app_input_callback(InputEvent* input_event, void* ctx) {
