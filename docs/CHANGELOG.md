@@ -1,6 +1,6 @@
 ## v0.4
 
-Add simple spectrum analyser
+Add simple spectrum analyser and basic software scaling support
 
 ## v0.3
 
